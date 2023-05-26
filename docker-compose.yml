@@ -1,0 +1,35 @@
+version: "1.0"
+services:
+  front:
+    container_name: "front"
+    image: ${FRONT_IMAGE}
+    restart: always
+    ports:
+      - "${FRONT_PORT}:3000"
+  back:
+    container_name: "back"
+    image: ${BACK_IMAGE}
+    restart: always
+    ports:
+      - "${BACK_PORT}:8000"
+  db:
+    container_name: "db"
+    image: mongo:4.4
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=${DB_NAME}
+    volumes:
+      - db-volume:/data/db
+  proxy:
+    container_name: "proxy"
+    build:
+      context: "./proxy"
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "80:80"
+
+volumes:
+  db-volume:
